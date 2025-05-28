@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 import requests, datetime, os
+import firebase_admin
+from firebase_admin import credentials, db
 
 app = Flask(__name__)
 FIREBASE_URL = os.environ.get("https://slu-project-3bc4e-default-rtdb.firebaseio.com/sensor_data.json")  # e.g., https://your-app.firebaseio.com/data.json
