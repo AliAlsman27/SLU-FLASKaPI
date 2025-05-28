@@ -14,7 +14,8 @@ def receive_sensor_data():
         device_id = data['device_id']
         
         # Add timestamp
-        data['timestamp'] = datetime.now().isoformat()
+        data['timestamp'] = datetime.datetime.now().isoformat()
+
         
         # Store in Firebase
         ref = db.reference(f'sensors/{device_id}')
