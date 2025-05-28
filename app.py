@@ -46,7 +46,7 @@ def receive_sensor_data():
 
         # Save to Firebase under sensors/<device_id>
         ref = db.reference(f'sensors/{device_id}')
-        ref.push({
+        ref.set({
             'device_id': device_id,
             'data': readings,
             'timestamp': timestamp
