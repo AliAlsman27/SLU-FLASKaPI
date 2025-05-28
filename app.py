@@ -4,8 +4,20 @@ import firebase_admin
 from firebase_admin import credentials, db
 
 app = Flask(__name__)
-FIREBASE_URL = os.environ.get("https://slu-project-3bc4e-default-rtdb.firebaseio.com/sensor_data.json")  # e.g., https://your-app.firebaseio.com/data.json
-FIREBASE_TOKEN = os.environ.get("https://your-project-id.firebaseio.com/sensor-data.json?auth=c0bGvEaNSVTyHNJbzQ9y5bvQqutkFCugMdXtvs6J")  # optional
+# Load credentials from environment variable
+cred_json = os.environ.get("FIREBASE_CREDENTIALS_JSON")
+
+if not cred_json:
+    raise RuntimeError("FIREBASE_CREDENTIALS_JSON is not set.")
+
+cred_dict = json.loads(cred_json)
+
+# Initialize the Firebase app
+if not firebase_admin._apps:
+    cred = credentials.Certificate(cred_dict)
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': 'https://slu-project-3bc4e-default-rtdb.firebaseio.com/'  # ← replace with your real Firebase URL
+    })
 @app.route('/')
 def home():
     return 'Sensor logger is running.'
