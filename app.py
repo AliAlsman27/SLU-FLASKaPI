@@ -9,10 +9,17 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# Decode credentials from environment variable
-cred_json = base64.b64decode(os.environ.get("FIREBASE_CREDENTIALS_B64")).decode("utf-8")
-cred_dict = json.loads(cred_json)
-cred = credentials.Certificate(cred_dict)
+# Read from environment
+json_string = os.environ.get("FIREBASE_CREDENTIALS_JSON")
+if not json_string:
+    raise RuntimeError("FIREBASE_CREDENTIALS_JSON is not set.")
+
+# Write it to a temp file
+with open("firebase_key.json", "w") as f:
+    f.write(json_string)
+
+# Initialize Firebase using the file we just created
+cred = credentials.Certificate("firebase_key.json")
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://your-project.firebaseio.com'
 })
