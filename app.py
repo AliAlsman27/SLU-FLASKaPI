@@ -24,19 +24,25 @@ def home():
 @app.route('/api/sensor-data', methods=['POST'])
 def receive_sensor_data():
     try:
-        data = request.json
+        print("🔥 HEADERS:", dict(request.headers))
+        print("🔥 RAW BODY:", request.get_data(as_text=True))
+
+        data = request.get_json(force=True)
+
+        if 'device_id' not in data:
+            raise ValueError("Missing 'device_id' in request")
+
         device_id = data['device_id']
-        
-        # Add timestamp
         data['timestamp'] = datetime.datetime.now().isoformat()
 
-        
         # Store in Firebase
         ref = db.reference(f'sensors/{device_id}')
         ref.push().set(data)
-        
+
         return jsonify({"status": "success"}), 200
+
     except Exception as e:
+        print("🔥 ERROR:", str(e))  # This will show in Railway logs
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
