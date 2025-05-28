@@ -1,28 +1,9 @@
 from flask import Flask, request, jsonify
-import os
-import base64
-import json
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import db
-from datetime import datetime
+import requests, datetime, os
 
 app = Flask(__name__)
-
-# Read from environment
-json_string = os.environ.get("FIREBASE_CREDENTIALS_JSON")
-if not json_string:
-    raise RuntimeError("FIREBASE_CREDENTIALS_JSON is not set.")
-
-# Write it to a temp file
-with open("firebase_key.json", "w") as f:
-    f.write(json_string)
-
-# Initialize Firebase using the file we just created
-cred = credentials.Certificate("firebase_key.json")
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://your-project.firebaseio.com'
-})
+FIREBASE_URL = os.environ.get("https://slu-project-3bc4e-default-rtdb.firebaseio.com/sensor_data.json")  # e.g., https://your-app.firebaseio.com/data.json
+FIREBASE_TOKEN = os.environ.get("https://your-project-id.firebaseio.com/sensor-data.json?auth=c0bGvEaNSVTyHNJbzQ9y5bvQqutkFCugMdXtvs6J")  # optional
 
 @app.route('/api/sensor-data', methods=['POST'])
 def receive_sensor_data():
