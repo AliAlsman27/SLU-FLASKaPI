@@ -4,7 +4,9 @@ import requests, datetime, os
 app = Flask(__name__)
 FIREBASE_URL = os.environ.get("https://slu-project-3bc4e-default-rtdb.firebaseio.com/sensor_data.json")  # e.g., https://your-app.firebaseio.com/data.json
 FIREBASE_TOKEN = os.environ.get("https://your-project-id.firebaseio.com/sensor-data.json?auth=c0bGvEaNSVTyHNJbzQ9y5bvQqutkFCugMdXtvs6J")  # optional
-
+@app.route('/')
+def home():
+    return 'Sensor logger is running.'
 @app.route('/api/sensor-data', methods=['POST'])
 def receive_sensor_data():
     try:
