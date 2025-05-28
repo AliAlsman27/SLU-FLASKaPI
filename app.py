@@ -1,4 +1,7 @@
 from flask import Flask, request, jsonify
+import os
+import base64
+import json
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
@@ -6,8 +9,10 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# Initialize Firebase
-cred = credentials.Certificate("path/to/serviceAccountKey.json")
+# Decode credentials from environment variable
+cred_json = base64.b64decode(os.environ.get("FIREBASE_CREDENTIALS_B64")).decode("utf-8")
+cred_dict = json.loads(cred_json)
+cred = credentials.Certificate(cred_dict)
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://your-project.firebaseio.com'
 })
