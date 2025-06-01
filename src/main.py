@@ -17,6 +17,7 @@ async def home():
 @app.post("/api/sensor-data")
 async def receive_sensor_data(sensor_data: SensorData):
     try:
+        print("Received data:", sensor_data)
         timestamp = datetime.now().isoformat()
         
         # Add timestamp to each reading (handle both dict and Pydantic model)
