@@ -195,13 +195,19 @@ cython_debug/
 
 
 # Credentials and Secrets
-firebase-credentials.json
-*credentials*.json
-*.pem
-*.key
+# Sensitive files (DO NOT COMMIT THESE FILES)
+firebase-credentials*.json
+!firebase-credentials.template.json
+*-credentials*.json
+*.private.*
+*.secret.*
+secrets/
+credentials/
+
+# Environment files
 .env
 .env.*
-credentials/
+*.env
 
 # Local development
 .vscode/
