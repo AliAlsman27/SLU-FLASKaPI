@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from firebase_admin import db
 from datetime import datetime
 from models import SensorData
@@ -46,3 +46,12 @@ async def receive_sensor_data(sensor_data: SensorData):
         return {"status": "success"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/sensor-data/debug")
+async def debug_sensor_data(request: Request):
+    try:
+        data = await request.json()
+        print("Raw received JSON:", data)
+        return {"received": data}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
