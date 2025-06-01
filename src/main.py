@@ -19,15 +19,26 @@ async def receive_sensor_data(sensor_data: SensorData):
     try:
         timestamp = datetime.now().isoformat()
         
-        # Add timestamp to each reading
+        # Add timestamp to each reading (handle both dict and Pydantic model)
+        updated_data = []
         for reading in sensor_data.data:
-            reading.timestamp = timestamp
+            if hasattr(reading, "copy"):
+                # Pydantic model
+                updated = reading.copy(update={"timestamp": timestamp})
+                updated_data.append(updated)
+            elif isinstance(reading, dict):
+                # dict
+                reading['timestamp'] = timestamp
+                updated_data.append(reading)
+            else:
+                # fallback
+                updated_data.append(reading)
 
         # Save to Firebase
         ref = db.reference(f'sensors/{sensor_data.device_id}')
         ref.set({
             'device_id': sensor_data.device_id,
-            'data': [reading.dict() for reading in sensor_data.data],
+            'data': [r.dict() if hasattr(r, "dict") else r for r in updated_data],
             'timestamp': timestamp
         })
 
