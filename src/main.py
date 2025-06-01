@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from firebase_admin import db
 from datetime import datetime
-from src.models import SensorData
-from src.config import init_firebase
+from models import SensorData
+from config import init_firebase
 
 app = FastAPI(title="Sensor Logger API")
 
