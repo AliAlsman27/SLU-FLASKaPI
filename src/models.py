@@ -1,12 +1,14 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 
 class SensorReading(BaseModel):
+    sensor: str
     value: float
-    type: str
-    unit: str = "unknown"
-    timestamp: datetime | None = None
+    unit: str
+    raw_distance: float
+    raw_unit: str
+    timestamp: Optional[str] = None  # Make timestamp optional
 
 class SensorData(BaseModel):
     device_id: str
