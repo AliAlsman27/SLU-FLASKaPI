@@ -55,3 +55,24 @@ async def debug_sensor_data(request: Request):
         return {"received": data}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/api/wake/{device_id}")
+async def wake_device(device_id: str):
+    try:
+        # Check if device exists in Firebase
+        ref = db.reference(f'stations/{device_id}')
+        device = ref.get()
+        
+        if device is None:
+            raise HTTPException(status_code=404, detail="Device not found")
+            
+        # Log wake request
+        wake_ref = db.reference(f'wake_requests/{device_id}')
+        wake_ref.set({
+            'timestamp': datetime.now().isoformat(),
+            'status': 'pending'
+        })
+        
+        return {"status": "success", "message": f"Wake request sent to {device_id}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
