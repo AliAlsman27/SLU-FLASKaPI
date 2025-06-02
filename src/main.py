@@ -20,26 +20,26 @@ async def receive_sensor_data(sensor_data: SensorData):
         print("Received data:", sensor_data)
         timestamp = datetime.now().isoformat()
         
-        # Add timestamp to each reading (handle both dict and Pydantic model)
+        # Add timestamp to each reading, matching ESP32 schema
         updated_data = []
         for reading in sensor_data.data:
-            if hasattr(reading, "copy"):
-                # Pydantic model
-                updated = reading.copy(update={"timestamp": timestamp})
-                updated_data.append(updated)
-            elif isinstance(reading, dict):
-                # dict
-                reading['timestamp'] = timestamp
-                updated_data.append(reading)
-            else:
-                # fallback
-                updated_data.append(reading)
+            # Convert to dict if it's a Pydantic model
+            if hasattr(reading, "dict"):
+                reading = reading.dict()
+            # Only keep expected keys and add timestamp
+            filtered = {
+                "sensor": reading.get("sensor"),
+                "value": reading.get("value"),
+                "unit": reading.get("unit"),
+                "timestamp": timestamp
+            }
+            updated_data.append(filtered)
 
         # Save to Firebase
-        ref = db.reference(f'sensors/{sensor_data.device_id}')
+        ref = db.reference(f'stations/{sensor_data.device_id}')
         ref.set({
             'device_id': sensor_data.device_id,
-            'data': [r.dict() if hasattr(r, "dict") else r for r in updated_data],
+            'data': updated_data,
             'timestamp': timestamp
         })
 
