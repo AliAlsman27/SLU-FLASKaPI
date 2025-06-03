@@ -10,4 +10,5 @@ class SensorReading(BaseModel):
 
 class SensorData(BaseModel):
     device_id: str
+    status: str  # New field for device status
     data: List[SensorReading]

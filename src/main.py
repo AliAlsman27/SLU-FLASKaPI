@@ -35,10 +35,11 @@ async def receive_sensor_data(sensor_data: SensorData):
             }
             updated_data.append(filtered)
 
-        # Save to Firebase
+        # Save to Firebase with status
         ref = db.reference(f'stations/{sensor_data.device_id}')
         ref.set({
             'device_id': sensor_data.device_id,
+            'status': sensor_data.status,  # Add status to Firebase
             'data': updated_data,
             'timestamp': timestamp
         })
