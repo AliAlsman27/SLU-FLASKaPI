@@ -26,8 +26,8 @@ def home():
 @app.route('/api/sensor-data', methods=['POST'])
 def receive_sensor_data():
     try:
-        print("🔥 Headers:", dict(request.headers))
-        print("🔥 Body:", request.get_data(as_text=True))
+        print("Headers:", dict(request.headers))
+        print("Body:", request.get_data(as_text=True))
 
         data = request.get_json(force=True)
 
